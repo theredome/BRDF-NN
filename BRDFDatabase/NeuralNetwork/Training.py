@@ -92,3 +92,27 @@ def adjust_weights(x):
         (np.array([1.0]), hidden_layer_y))
     for i, error in enumerate(output_layer_error):
         output_layer_w[i] -= hidden_output_array * LR * error # Update all weights
+
+#Instantiation and Initialization of our Neurons within our NN
+def layer_w(neuron_count, input_count):
+    weights = np.zeros((neuron_count, input_count+1))
+    for i in range(neuron_count):
+        for j in range(1, (input_count+1)):
+            weights[i][j] = np.random.uniform(-0.1, 0.1)
+    return weights
+
+
+#matrices and vectors for neurons.
+#Part of our chapter 4 page 108
+H = Hidden_layer_size
+D = X.shape[1] 
+
+#the hidden layers
+hidden_layer_w = layer_w(H, D)
+hidden_layer_y = np.zeros(H, dtype=np.float32)
+hidden_layer_error = np.zeros(H, dtype=np.float32)
+
+# Output layer: 1 neuron
+output_layer_w = layer_w(1, H)
+output_layer_y = np.zeros(1, dtype=np.float32)
+output_layer_error = np.zeros(1, dtype=np.float32)
