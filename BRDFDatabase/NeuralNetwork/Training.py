@@ -193,7 +193,7 @@ for epoch in range(EPOCHS): # Training the EPOCHS iterations
     test_mse = np.mean((test_preds - y_test)**2)
 
     show_learning(epoch, train_mse, test_mse)# Fourth step; Evaluate network
-    
+
     # Early stopping here
     if test_mse < best_test_mse:
         best_test_mse = test_mse
@@ -206,3 +206,10 @@ for epoch in range(EPOCHS): # Training the EPOCHS iterations
         break
 
 plot_learning() #Fifth step; Create plot
+
+
+with open("csc_411_final_weights.txt", "w") as f:
+    f.write("hidden_layer_w:\n")
+    np.savetxt(f, hidden_layer_w)
+    f.write("\noutput_layer_w:\n")
+    np.savetxt(f, output_layer_w)
