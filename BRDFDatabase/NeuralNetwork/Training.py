@@ -159,23 +159,6 @@ def plot_learning():
 best_test_mse = np.inf
 epochs_since_improve = 0
 
-for epoch in range(EPOCHS):
-
-    show_learning(epoch, train_mse, test_mse)
-
-    # Early stopping here
-    if test_mse < best_test_mse:
-        best_test_mse = test_mse
-        epochs_since_improve = 0
-    else:
-        epochs_since_improve += 1
-
-    if epochs_since_improve >= Stopping:
-        print(f"Early stopping at epoch {epoch + 1}")
-        break
-
-
-
 
 #Based on the structure for training loop in page 112 of our textbook
 
@@ -210,5 +193,16 @@ for epoch in range(EPOCHS): # Training the EPOCHS iterations
     test_mse = np.mean((test_preds - y_test)**2)
 
     show_learning(epoch, train_mse, test_mse)# Fourth step; Evaluate network
+    
+    # Early stopping here
+    if test_mse < best_test_mse:
+        best_test_mse = test_mse
+        epochs_since_improve = 0
+    else:
+        epochs_since_improve += 1
+
+    if epochs_since_improve >= Stopping:
+        print(f"Early stopping at epoch {epoch + 1}")
+        break
 
 plot_learning() #Fifth step; Create plot
