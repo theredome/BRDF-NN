@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 data_path = "alum.txt"
 Hidden_layer_size = 64 
@@ -116,3 +118,29 @@ hidden_layer_error = np.zeros(H, dtype=np.float32)
 output_layer_w = layer_w(1, H)
 output_layer_y = np.zeros(1, dtype=np.float32)
 output_layer_error = np.zeros(1, dtype=np.float32)
+
+chart_x = []
+chart_y_train = []
+chart_y_test = []
+
+#For reporting progress like example in page 108
+def show_learning(epoch_no, train_mse, test_mse):
+    global chart_x
+    global chart_y_train
+    global chart_y_test
+
+    print( "epoch no:", epoch_no + 1, ", train_mse:", f"{train_mse:6.4f}", ", test_mse:", f"{test_mse:6.4f}")
+    chart_x.append(epoch_no + 1)
+    chart_y_train.append(train_mse)
+    chart_y_test.append(test_mse)
+
+def plot_learning():
+    plt.plot(chart_x, chart_y_train, 'r-',label='training error')
+    plt.plot(chart_x, chart_y_test, 'b-', label='test error')
+    plt.axis([0, len(chart_x), 0.0, 1.0])
+    plt.xlabel('training epochs')
+    plt.ylabel('error')
+    plt.title("Training vs Testing Error")
+    plt.legend()
+    plt.grid(True)
+    plt.show() 
