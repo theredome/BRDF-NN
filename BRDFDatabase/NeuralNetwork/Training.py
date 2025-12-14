@@ -44,7 +44,18 @@ X = np.stack(
 
 N, D = X.shape
 
+# ____We are using this section for training much below_____
+idx = np.arange(N)
+np.random.shuffle(idx)
 
+X = X[idx]
+y = y[idx]
+split = N // 2
+X_train, X_test = X[:split], X[split:]
+y_train, y_test = y[:split], y[split:]
+
+index_list = np.arange(len(X_train))
+#___________till here _________________________________________
 
 #reference from page 109 in our textbook
 def forward_pass(x):
@@ -124,23 +135,80 @@ chart_y_train = []
 chart_y_test = []
 
 #For reporting progress like example in page 108
-def show_learning(epoch_no, train_mse, test_mse):
+def show_learning(epoch, train_mse, test_mse):
     global chart_x
     global chart_y_train
     global chart_y_test
 
-    print( "epoch no:", epoch_no + 1, ", train_mse:", f"{train_mse:6.4f}", ", test_mse:", f"{test_mse:6.4f}")
-    chart_x.append(epoch_no + 1)
+    print( "epoch no:", epoch + 1, ", train_mse:", f"{train_mse:6.4f}", ", test_mse:", f"{test_mse:6.4f}")
+    chart_x.append(epoch + 1)
     chart_y_train.append(train_mse)
     chart_y_test.append(test_mse)
 
 def plot_learning():
     plt.plot(chart_x, chart_y_train, 'r-',label='training error')
     plt.plot(chart_x, chart_y_test, 'b-', label='test error')
-    plt.axis([0, len(chart_x), 0.0, 1.0])
     plt.xlabel('training epochs')
     plt.ylabel('error')
     plt.title("Training vs Testing Error")
     plt.legend()
     plt.grid(True)
     plt.show() 
+
+#We have this section here for stopping to prevent overftting
+best_test_mse = np.inf
+epochs_since_improve = 0
+
+for epoch in range(EPOCHS):
+
+    show_learning(epoch, train_mse, test_mse)
+
+    # Early stopping here
+    if test_mse < best_test_mse:
+        best_test_mse = test_mse
+        epochs_since_improve = 0
+    else:
+        epochs_since_improve += 1
+
+    if epochs_since_improve >= Stopping:
+        print(f"Early stopping at epoch {epoch + 1}")
+        break
+
+
+
+
+#Based on the structure for training loop in page 112 of our textbook
+
+for epoch in range(EPOCHS): # Training the EPOCHS iterations
+
+    np.random.shuffle(index_list) # first step; Randomize order
+
+    for j in index_list:
+       
+        x = np.concatenate(([1.0], X_train[j]))  
+        
+        y_truth = np.array([y_train[j, 0]], dtype=np.float32)
+
+        y_pred = forward_pass(x)
+        backward_pass(y_truth)
+        adjust_weights(x)
+       
+    train_preds = []
+    for j in range(len(X_train)): # Second step; Randomize order
+        x = np.concatenate(([1.0], X_train[j]))
+        y_pred = forward_pass(x)
+        train_preds.append(y_pred)
+    train_preds = np.array(train_preds).reshape(-1, 1)
+    train_mse = np.mean((train_preds - y_train)**2)
+
+    test_preds = []
+    for j in range(len(X_test)):# Third step; Evaluate network
+        x = np.concatenate(([1.0], X_test[j]))
+        y_pred = forward_pass(x)
+        test_preds.append(y_pred)
+    test_preds = np.array(test_preds).reshape(-1, 1)
+    test_mse = np.mean((test_preds - y_test)**2)
+
+    show_learning(epoch, train_mse, test_mse)# Fourth step; Evaluate network
+
+plot_learning() #Fifth step; Create plot
