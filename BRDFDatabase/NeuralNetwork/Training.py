@@ -21,10 +21,8 @@ theta_o = data[:, 2]
 phi_o = data[:, 3]
 
 red = data[:, 4:5]
-green = data[:, 5:6]
-blue = data[:, 6:7]
 
-y = np.concatenate([red, green, blue], axis=1).astype(np.float32)
+y = red.astype(np.float32)
 
 sin_theta_i, cos_theta_i = np.sin(theta_i), np.cos(theta_i)
 sin_phi_i, cos_phi_i = np.sin(phi_i), np.cos(phi_i)
