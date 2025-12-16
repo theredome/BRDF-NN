@@ -6,7 +6,6 @@ data_path = "alum.txt"
 Hidden_layer_size = 64 
 LR = 1e-3
 EPOCHS = 50
-BATCH = 1024
 Stopping = 8  #how many EPOCHS we do w/ no testing before stopping
 SEED = 42
 
